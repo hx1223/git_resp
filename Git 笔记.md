@@ -1,6 +1,6 @@
 # Git 简介
 
-![image-20220628185837906](C:\Users\hx\AppData\Roaming\Typora\typora-user-images\image-20220628185837906.png)
+![img](https://kisugitakumi.oss-cn-chengdu.aliyuncs.com/img7/image-20220118142757623.png)
 
 命令如下：
 
@@ -37,7 +37,7 @@ push（推送） : 修改完成后，需要和团队成员共享代码时，将�
 
 `touch ~/.bashrc`
 
-![image-20220628190741062](C:\Users\hx\AppData\Roaming\Typora\typora-user-images\image-20220628190741062.png)
+![img](https://kisugitakumi.oss-cn-chengdu.aliyuncs.com/img7/image-20220118143824676.png)
 
 2.在.bashrc输入以下内容
 
@@ -64,7 +64,7 @@ push（推送） : 修改完成后，需要和团队成员共享代码时，将�
 ##### 4.如果创建成功后可在文件夹下看到隐藏的.git目录
 
 
-![image-20220628200958216](C:\Users\hx\AppData\Roaming\Typora\typora-user-images\image-20220628200958216.png)
+![img](https://kisugitakumi.oss-cn-chengdu.aliyuncs.com/img7/image-20220118144908667.png)
 
 ### 5.基本配置指令
 
@@ -193,7 +193,7 @@ git branch -D 分支名 # 不做任何检查，强制删除
 ------
 
 
-![image-20220628205235132](C:\Users\hx\AppData\Roaming\Typora\typora-user-images\image-20220628205235132.png)
+![img](https://kisugitakumi.oss-cn-chengdu.aliyuncs.com/img7/image-20220118170619389.png)
 
 ### 6.Git远程仓库
 
