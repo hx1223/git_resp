@@ -209,3 +209,180 @@
 ## 注解开发定义bean
 
 ![image-20220720113005638](img/image-20220720113005638.png)
+
+## 纯注解开发
+
+纯注解开发不再需要ApplicationContext.properties文件形式，改用注解形式进行开发，但需创建一个SpringConfig类
+
+```java
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan("Dao")
+//组件扫描路径
+public class SpringConfig {
+}
+```
+
+```java
+public class test {
+    public static void main(String[] args) {
+        //ApplicationContext ctx=new ClassPathXmlApplicationContext("applicationContext.xml");
+        //原先的ClassPathXmlApplicationContext方式获取容器改为
+        //AnnotationConfigApplicationContext注解方式获取
+        ApplicationContext ctx=new AnnotationConfigApplicationContext(SpringConfig.class);
+        BookDao bookDao = ctx.getBean("bookDao", BookDao.class);
+        bookDao.save();
+    }
+}
+```
+
+![image-20220721004258692](img/image-20220721004258692.png)
+
+![image-20220721004353284](img/image-20220721004353284.png)
+
+### 注解开发bean作用范围与生命周期管理
+
+![image-20220721010420165](img/image-20220721010420165.png)
+
+```java
+//jdk8之后想使用@PostConstruct和@PreDestory需引入以下依赖
+<dependency>
+  <groupId>javax.annotation</groupId>
+  <artifactId>javax.annotation-api</artifactId>
+  <version>1.3.2</version>
+</dependency>
+```
+
+![image-20220721010702491](img/image-20220721010702491.png)
+
+### 依赖注入
+
+![image-20220721012231745](img/image-20220721012231745.png)
+
+![image-20220721012410322](img/image-20220721012410322.png)
+
+![image-20220721012443441](img/image-20220721012443441.png)
+
+### 加载properties文件
+
+![image-20220721012545786](img/image-20220721012545786.png)
+
+### 第三方bean管理
+
+![image-20220721095638159](img/image-20220721095638159.png)
+
+**一般不写在SpringConfig类中，使用独立的配置类管理第三方bean**
+
+```java
+//在Config包下新建一个jdbc配置类
+public class jdbcConfig {
+    @Bean
+    public DataSource dataSource(){
+        DruidDataSource ds=new DruidDataSource();
+        ds.setDriverClassName("com.mysql.jdbc.Driver");
+        ds.setUrl("jdbc:mysql://localhost:3306/hrdb");
+        ds.setUsername("root");
+        ds.setPassword("123456");
+        return ds;
+    }
+}
+```
+
+**将独立的配置类加入核心配置**
+
+##### 方式一：导入式(推荐)
+
+```java
+public class jdbcConfig {
+    @Bean
+    public DataSource dataSource(){
+        DruidDataSource ds=new DruidDataSource();
+        //相关配置
+        return ds;
+    }
+}
+```
+
+**使用@Import注解手动加入配置类到核心配置，此注解只能添加一次，多个数据请用数组格式**
+
+```java
+@Configuration
+@Import(jdbcConfig.class)
+public class SpringConfig {
+
+}
+```
+
+##### 方式二：扫描式
+
+```java
+@Configuration
+public class jdbcConfig {
+    @Bean
+    public DataSource dataSource(){
+        DruidDataSource ds=new DruidDataSource();
+        //相关配置
+        return ds;
+    }
+}
+```
+
+```java
+@Configuration
+@ComponentScan({"config","Dao","Service"})
+public class SpringConfig {
+
+}
+```
+
+### 第三方bean依赖注入
+
+​	**简单类型的依赖注入**
+
+```java
+public class jdbcConfig {
+    @Value("com.mysql.jdbc.Driver")
+    //也可将文件写到jdbc.properties中,如
+    //@Value("${driverName}")
+    private String DriverName;
+    @Value("jdbc:mysql://localhost:3306/hrdb")
+    private String Url;
+    @Value("root")
+    private String Username;
+    @Value("123456")
+    private String Password;
+    @Bean
+    public DataSource dataSource(){
+        DruidDataSource ds=new DruidDataSource();
+        ds.setDriverClassName(DriverName);
+        ds.setUrl(Url);
+        ds.setUsername(Username);
+        ds.setPassword(Password);
+        return ds;
+    }
+}
+```
+
+​	**引用类型的依赖注入**
+
+![image-20220721103308588](img/image-20220721103308588.png)
+
+## Xml配置对比注解配置
+
+![image-20220721103734190](img/image-20220721103734190.png)
+
+## Spring整合MyBatis
+
+**需要的包：**druid(造dataSource) mybaties(3.5.6) mysql-connection mybaties-spring(1.3.0) spring-jdbc spring-context
+
+![image-20220721110658040](img/image-20220721110658040.png)
+
+![image-20220721110746844](img/image-20220721110746844.png)
+
+## Spring整合Junit
+
+**需要的包：**junit   spring-test
+
+![image-20220721112000017](img/image-20220721112000017.png)
