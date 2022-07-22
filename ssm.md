@@ -377,6 +377,82 @@ public class jdbcConfig {
 
 **需要的包：**druid(造dataSource) mybaties(3.5.6) mysql-connection mybaties-spring(1.3.0) spring-jdbc spring-context
 
+```java
+public class MybatisConfig {
+    @Bean
+    public SqlSessionFactoryBean sqlSessionFactoryBean(DataSource dataSource){
+        SqlSessionFactoryBean sfb=new 		SqlSessionFactoryBean();
+        //设置实体类包的别名
+        sfb.setTypeAliasesPackage("domain");
+        sfb.setDataSource(dataSource);
+        return sfb;
+    }
+    @Bean
+    public MapperScannerConfigurer mapperScannerConfigurer(){
+        MapperScannerConfigurer msc=new MapperScannerConfigurer();
+        //设置mapper所在的包
+        msc.setBasePackage("Dao");
+        return msc;
+    }
+
+}
+```
+
+![image-20220722233444035](img/image-20220722233444035.png)
+
+```java
+@Configuration
+@ComponentScan({"Dao","Service"})
+@PropertySource("classpath:jdbc.properties")
+@Import({MybatisConfig.class,jdbcConfig.class})
+
+public class SpringConfig {
+
+}
+```
+
+```java
+public class jdbcConfig {
+    @Value("${jdbc.DriverName}")
+    private String DriverName;
+    @Value("${jdbc.Url}")
+    private String Url;
+    @Value("${jdbc.Username}")
+    private String Username;
+    @Value("${jdbc.Password}")
+    private String Password;
+    @Bean
+    public DataSource dataSource(){
+        DruidDataSource ds=new DruidDataSource();
+       ds.setDriverClassName(DriverName);
+        ds.setUrl(Url);
+        ds.setUsername(Username);
+        ds.setPassword(Password);
+        return ds;
+    }
+}
+```
+
+```java
+//jdbc.properties
+jdbc.DriverName=com.mysql.cj.jdbc.Driver
+jdbc.Url=jdbc:mysql://localhost:3306/hrdb
+jdbc.Username=root
+jdbc.Password=123456
+```
+
+```java
+public class test {
+    public static void main(String[] args) throws IOException {
+        AnnotationConfigApplicationContext ctx=new AnnotationConfigApplicationContext(SpringConfig.class);
+        UserService userService = ctx.getBean(UserService.class);
+        System.out.println(userService.selectALL());
+    }
+}
+```
+
+​	Spring整合mybaties,其中mybaties的datasource来自druid(jdbcConfig）,druid的相关配置写在外面的resources下的jdbc.properties文件中
+
 ![image-20220721110658040](img/image-20220721110658040.png)
 
 ![image-20220721110746844](img/image-20220721110746844.png)
@@ -386,3 +462,33 @@ public class jdbcConfig {
 **需要的包：**junit   spring-test
 
 ![image-20220721112000017](img/image-20220721112000017.png)
+
+## Aop
+
+### Aop简介
+
+![image-20220722234752047](img/image-20220722234752047.png)
+
+![image-20220722235216098](img/image-20220722235216098.png)
+
+### 核心概念
+
+![image-20220722235535695](img/image-20220722235535695.png)
+
+### 入门案例思路分析
+
+![image-20220722235655801](img/image-20220722235655801.png)
+
+![image-20220723000553854](img/image-20220723000553854.png)
+
+![image-20220723000623136](img/image-20220723000623136.png)
+
+![image-20220723000659872](img/image-20220723000659872.png)
+
+![image-20220723000719777](img/image-20220723000719777.png)
+
+![image-20220723000823648](img/image-20220723000823648.png)
+
+![image-20220723000850000](img/image-20220723000850000.png)
+
+![image-20220723000914312](img/image-20220723000914312.png)
